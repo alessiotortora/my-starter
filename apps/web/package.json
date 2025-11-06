@@ -11,7 +11,7 @@
 		"@repo/ui": "workspace:*",
 		"@tailwindcss/vite": "catalog:tailwind",
 		"@tanstack/react-router": "^1.134.12",
-		"@tanstack/react-start": "^1.134.12",
+		"@tanstack/react-start": "^1.134.13",
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"tailwindcss": "catalog:tailwind"
