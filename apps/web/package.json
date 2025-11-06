@@ -1,28 +1,29 @@
 {
-  "name": "web",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --port 3000",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint --max-warnings 0",
-    "check-types": "next typegen && tsc --noEmit"
-  },
-  "dependencies": {
-    "@repo/ui": "*",
-    "next": "^16.0.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
-    "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
-    "eslint": "^9.38.0",
-    "typescript": "5.9.2"
-  }
+	"name": "tanstack",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build"
+	},
+	"dependencies": {
+		"@repo/ui": "workspace:*",
+		"@tailwindcss/vite": "catalog:tailwind",
+		"@tanstack/react-router": "^1.134.12",
+		"@tanstack/react-start": "^1.134.12",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"tailwindcss": "catalog:tailwind"
+	},
+	"devDependencies": {
+		"@types/bun": "catalog:types",
+		"@types/node": "catalog:types",
+		"@types/react": "catalog:react-types",
+		"@types/react-dom": "catalog:react-types",
+		"@vitejs/plugin-react": "catalog:vite",
+		"typescript": "catalog:",
+		"vite": "catalog:vite",
+		"vite-tsconfig-paths": "catalog:vite"
+	}
 }

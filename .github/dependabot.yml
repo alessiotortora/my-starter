@@ -1,0 +1,57 @@
+version: 2
+updates:
+  # Bun dependencies for root package.json
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "alessiotortora"
+    assignees:
+      - "alessiotortora"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Bun dependencies for apps/web
+  - package-ecosystem: "bun"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "alessiotortora"
+    assignees:
+      - "alessiotortora"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Bun dependencies for packages/ui
+  - package-ecosystem: "bun"
+    directory: "/packages/ui"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "alessiotortora"
+    assignees:
+      - "alessiotortora"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "alessiotortora"
+    assignees:
+      - "alessiotortora"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
