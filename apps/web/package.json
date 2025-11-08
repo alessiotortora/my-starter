@@ -9,9 +9,12 @@
 	},
 	"dependencies": {
 		"@repo/ui": "workspace:*",
+		"@repo/api": "workspace:*",
 		"@tailwindcss/vite": "catalog:tailwind",
 		"@tanstack/react-router": "^1.134.12",
 		"@tanstack/react-start": "^1.134.12",
+		"@tanstack/react-query": "^5.0.0",
+		"@orpc/client": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"tailwindcss": "catalog:tailwind"

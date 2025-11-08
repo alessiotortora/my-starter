@@ -4,7 +4,12 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
-    "hono": "^4.10.4"
+    "hono": "^4.10.4",
+    "@repo/api": "workspace:*",
+    "@orpc/server": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/zod": "catalog:",
+    "dotenv": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "latest"

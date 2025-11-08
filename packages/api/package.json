@@ -1,0 +1,15 @@
+{
+	"name": "@repo/api",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"dependencies": {
+		"@orpc/server": "catalog:",
+		"@orpc/zod": "catalog:"
+	},
+	"devDependencies": {
+		"typescript": "catalog:"
+	}
+}
+
