@@ -9,7 +9,8 @@
     "@orpc/server": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/zod": "catalog:",
-    "dotenv": "catalog:"
+    "dotenv": "catalog:",
+    "better-auth": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "latest"

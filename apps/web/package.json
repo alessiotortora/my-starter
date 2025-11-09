@@ -17,7 +17,8 @@
 		"@orpc/client": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
-		"tailwindcss": "catalog:tailwind"
+		"tailwindcss": "catalog:tailwind",
+		"better-auth": "catalog:"
 	},
 	"devDependencies": {
 		"@types/bun": "catalog:types",
