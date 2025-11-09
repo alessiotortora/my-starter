@@ -1,13 +1,17 @@
-import { os } from "@orpc/server";
+import type { RouterClient } from "@orpc/server";
+import { protectedProcedure, publicProcedure } from "./procedures";
 
-export const router = {
-	hello: os.handler(() => {
-		return "Hello World, hono with orpc and tanstack are setup.";
-	}),
-	health: os.handler(() => {
+export const appRouter = {
+	healthCheck: publicProcedure.handler(() => {
 		return {
 			status: "healthy",
 			message: "Server is running and healthy",
 		};
 	}),
+	hello: protectedProcedure.handler(() => {
+		return "Hello World, hono with orpc and tanstack are setup.";
+	}),
 };
+
+export type AppRouter = typeof appRouter;
+export type AppRouterClient = RouterClient<typeof appRouter>;

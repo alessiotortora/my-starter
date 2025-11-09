@@ -1,31 +1,48 @@
-import { RPCHandler } from "@orpc/server/fetch";
-import { router } from "@repo/api";
+import "dotenv/config";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { serverConfig } from "./config";
+import { rpcMiddleware, sessionMiddleware } from "./middleware";
+import { authRoutes } from "./routes";
+import type { Variables } from "./utils";
 
-const app = new Hono();
+const app = new Hono<{ Variables: Variables }>();
 
-const handler = new RPCHandler(router);
+app.use("*", logger());
 
-app.use("/rpc/*", async (c, next) => {
-	const { matched, response } = await handler.handle(c.req.raw, {
-		prefix: "/rpc",
-		context: {},
-	});
+// CORS configuration for Better Auth
+app.use(
+	"/api/auth/*",
+	cors({
+		origin: process.env.CORS_ORIGIN || "http://localhost:3001",
+		allowHeaders: ["Content-Type", "Authorization"],
+		allowMethods: ["POST", "GET", "OPTIONS"],
+		exposeHeaders: ["Content-Length"],
+		maxAge: 600,
+		credentials: true,
+	}),
+);
 
-	if (matched) {
-		return c.newResponse(response.body, response);
-	}
+// Better Auth routes
+app.route("/", authRoutes);
 
-	await next();
-});
+// Session middleware for all subsequent routes
+app.use("*", sessionMiddleware);
 
+// oRPC middleware at /rpc
+app.use("/rpc/*", rpcMiddleware);
+
+// Root route
 app.get("/", (c) => {
-	return c.text("Hello Hono!");
+	return c.json({
+		message: "Server is running",
+		status: "ok",
+		port: serverConfig.port,
+	});
 });
-
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 export default {
-	port,
+	port: serverConfig.port,
 	fetch: app.fetch,
 };

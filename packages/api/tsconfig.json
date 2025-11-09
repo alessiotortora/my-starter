@@ -4,8 +4,15 @@
 		"composite": true,
 		"incremental": true,
 		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@repo/auth": ["../auth/src/auth.ts"]
+		},
 		"types": [],
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"references": [
+		{ "path": "../auth" }
+	]
 }
 

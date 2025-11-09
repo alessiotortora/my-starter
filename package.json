@@ -41,7 +41,8 @@
 			"@orpc/openapi": "^1.10.0",
 			"@orpc/zod": "^1.10.0",
 			"dotenv": "^16.4.5",
-			"better-auth": "^1.3.34"
+			"better-auth": "^1.3.34",
+			"hono": "^4.10.4"
 		},
 		"catalogs": {
 			"react-types": {

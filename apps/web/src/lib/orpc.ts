@@ -1,17 +1,20 @@
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
-import type { RouterClient } from "@orpc/server";
 import { createRouterClient } from "@orpc/server";
-import { router } from "@repo/api";
+import { type AppRouterClient, appRouter } from "@repo/api";
 import { createIsomorphicFn } from "@tanstack/react-start";
 
 const getORPCClient = createIsomorphicFn()
 	.server(() =>
-		createRouterClient(router, {
-			context: async () => ({}),
+		createRouterClient(appRouter, {
+			context: async () => {
+				// Server-side context will be created by the middleware
+				// This is a fallback for SSR
+				return { session: null };
+			},
 		}),
 	)
-	.client((): RouterClient<typeof router> => {
+	.client((): AppRouterClient => {
 		const link = new RPCLink({
 			url: "http://localhost:3000/rpc",
 		});
@@ -19,4 +22,4 @@ const getORPCClient = createIsomorphicFn()
 		return createORPCClient(link);
 	});
 
-export const client: RouterClient<typeof router> = getORPCClient();
+export const client: AppRouterClient = getORPCClient();

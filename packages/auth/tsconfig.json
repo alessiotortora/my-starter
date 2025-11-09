@@ -4,8 +4,15 @@
 		"composite": true,
 		"incremental": true,
 		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@repo/db/schema/auth": ["../db/src/schema/auth.ts"]
+		},
 		"types": [],
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"references": [
+		{ "path": "../db" }
+	]
 }
 

@@ -5,13 +5,17 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@repo/auth": ["../../packages/auth/src/auth.ts"],
+      "@repo/api": ["../../packages/api/src/index.ts"],
+      "@repo/api/*": ["../../packages/api/src/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   },
   "include": ["src"],
   "references": [
-    { "path": "../../packages/api" }
+    { "path": "../../packages/api" },
+    { "path": "../../packages/auth" }
   ]
 }
