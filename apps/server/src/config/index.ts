@@ -1,3 +1,2 @@
-export const serverConfig = {
-	port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-};
+export { corsConfig } from "./cors";
+export { serverConfig } from "./server";

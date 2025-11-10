@@ -7,6 +7,6 @@
       "@repo/ui/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "../../apps/web/src/components/login-form.tsx"],
   "exclude": ["node_modules", "dist"]
 }

@@ -38,6 +38,7 @@
 			"typescript": "5.9.2",
 			"@orpc/server": "^1.10.0",
 			"@orpc/client": "^1.10.0",
+			"@orpc/tanstack-query": "^1.11.1",
 			"@orpc/openapi": "^1.10.0",
 			"@orpc/zod": "^1.10.0",
 			"dotenv": "^16.4.5",

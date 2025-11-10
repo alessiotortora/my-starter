@@ -1,10 +1,10 @@
 // src/routes/index.tsx
 import { Button } from "@repo/ui/components/button";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useSession } from "../lib/auth-client";
-import { client } from "../lib/orpc";
+import { orpc } from "../lib/orpc";
 
 export const Route = createFileRoute("/")({
 	component: Home,
@@ -14,10 +14,7 @@ function Home() {
 	const navigate = useNavigate();
 	const { data: session } = useSession();
 
-	const { data: healthStatus } = useSuspenseQuery({
-		queryKey: ["healthCheck"],
-		queryFn: () => client.healthCheck(),
-	});
+	const { data: healthStatus } = useQuery(orpc.healthCheck.queryOptions());
 
 	// Redirect to dashboard if already logged in
 	useEffect(() => {
