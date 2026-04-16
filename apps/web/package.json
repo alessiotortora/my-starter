@@ -16,8 +16,7 @@
     "@tanstack/react-start": "^1",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "tailwindcss": "^4.2.2",
-    "vite-tsconfig-paths": "^5.1.4"
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@types/react": "catalog:",
