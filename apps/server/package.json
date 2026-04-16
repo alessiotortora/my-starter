@@ -4,14 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --watch src/index.ts",
+    "dev": "bun --env-file=../../.env --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target browser",
-    "start": "bun src/index.ts",
+    "start": "bun --env-file=../../.env src/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@repo/api": "workspace:*",
     "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*",
     "@orpc/server": "^1",
     "hono": "catalog:"
   },

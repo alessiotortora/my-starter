@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { corsConfig, serverConfig } from "./config";
+import { checkHealth } from "./health";
 import { rpcMiddleware } from "./middleware";
 import { authRoutes } from "./routes";
 
@@ -14,11 +15,9 @@ app.route("/", authRoutes);
 
 app.use("/rpc/*", rpcMiddleware);
 
-app.get("/", (c) => {
-  return c.json({
-    status: "ok",
-    port: serverConfig.port,
-  });
+app.get("/", async (c) => {
+  const health = await checkHealth();
+  return c.json(health);
 });
 
 export default {
