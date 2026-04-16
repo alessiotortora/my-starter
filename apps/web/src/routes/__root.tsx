@@ -1,5 +1,12 @@
 import appCss from "@repo/ui/globals.css?url";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -10,8 +17,19 @@ export const Route = createRootRoute({
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
+  component: RootLayout,
   shellComponent: RootDocument,
 });
+
+function RootLayout() {
+  return (
+    <>
+      <Outlet />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
+      <TanStackRouterDevtools position="bottom-right" />
+    </>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
