@@ -1,7 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["src"],
-  "compilerOptions": {
-    "strictNullChecks": true
-  }
+  "extends": "@repo/typescript-config/base.json",
+  "include": ["src"]
 }
