@@ -1,45 +1,27 @@
-import { onError } from "@orpc/server";
-import { RPCHandler } from "@orpc/server/fetch";
-import { router } from "@repo/api/router";
-import { auth } from "@repo/auth/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { corsConfig, serverConfig } from "./config";
+import { rpcMiddleware } from "./middleware";
+import { authRoutes } from "./routes";
 
 const app = new Hono();
 
-const rpcHandler = new RPCHandler(router, {
-  interceptors: [
-    onError((error) => {
-      console.error(error);
-    }),
-  ],
-});
+app.use("*", logger());
+app.use("*", cors(corsConfig));
 
-app.use(
-  "/*",
-  cors({
-    origin: process.env.BETTER_AUTH_TRUSTED_ORIGIN ?? "http://localhost:3001",
-    credentials: true,
-  })
-);
+app.route("/", authRoutes);
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
-
-app.use("/rpc/*", async (c, next) => {
-  const { matched, response } = await rpcHandler.handle(c.req.raw, {
-    prefix: "/rpc",
-    context: {},
-  });
-
-  if (matched) {
-    return c.newResponse(response.body, response);
-  }
-
-  await next();
-});
+app.use("/rpc/*", rpcMiddleware);
 
 app.get("/", (c) => {
-  return c.json({ ok: true });
+  return c.json({
+    status: "ok",
+    port: serverConfig.port,
+  });
 });
 
-export default app;
+export default {
+  port: serverConfig.port,
+  fetch: app.fetch,
+};

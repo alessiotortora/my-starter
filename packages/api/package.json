@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     "./contract": "./src/contract.ts",
+    "./context": "./src/context.ts",
+    "./procedures": "./src/procedures.ts",
     "./router": "./src/router.ts",
     "./client": "./src/client.ts"
   },
@@ -12,6 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/auth": "workspace:*",
     "@orpc/contract": "^1",
     "@orpc/server": "^1",
     "@orpc/client": "^1",
