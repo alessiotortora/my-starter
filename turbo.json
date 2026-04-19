@@ -1,5 +1,15 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
+  "globalEnv": [
+    "APP_ENV",
+    "PORT",
+    "DATABASE_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "BETTER_AUTH_TRUSTED_ORIGIN",
+    "RESEND_API_KEY",
+    "EMAIL_FROM"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
