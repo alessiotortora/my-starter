@@ -44,7 +44,7 @@ function Dashboard() {
         </div>
         <SignOutButton />
       </header>
-      <PostsPanel userId={session.user.id} />
+      <PostsPanel />
     </div>
   );
 }

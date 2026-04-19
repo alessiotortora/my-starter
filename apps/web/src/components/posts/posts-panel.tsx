@@ -32,11 +32,7 @@ import { toast } from "sonner";
 import { CreatePostDialog } from "@/components/posts/create-post-dialog";
 import { orpc } from "@/lib/orpc";
 
-interface PostsPanelProps {
-  userId: string;
-}
-
-export function PostsPanel({ userId: _userId }: PostsPanelProps) {
+export function PostsPanel() {
   const queryClient = useQueryClient();
 
   const listMineKey = orpc.posts.listMine.queryKey();

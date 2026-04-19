@@ -40,8 +40,8 @@ export async function listPublished(db: Database) {
   return rows;
 }
 
-export async function listMine(db: Database, userId: string) {
-  return await db
+export function listMine(db: Database, userId: string) {
+  return db
     .select()
     .from(posts)
     .where(eq(posts.userId, userId))
