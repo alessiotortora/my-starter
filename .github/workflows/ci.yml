@@ -49,6 +49,15 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    # Placeholders satisfy varlock's schema validation during `vite build`.
+    # CI only bundles static assets — real credentials belong in deploy
+    # workflows via `secrets.*`, not here.
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-placeholder-secret-not-for-production-use-abc
+      BETTER_AUTH_URL: http://localhost:3000
+      BETTER_AUTH_TRUSTED_ORIGIN: http://localhost:3001
+      EMAIL_FROM: ci@example.com
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
