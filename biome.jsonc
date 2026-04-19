@@ -13,7 +13,9 @@
       "**/*.jsonc",
       "**/*.css",
       "!!**/routeTree.gen.ts",
-      "!!**/dist"
+      "!!**/dist",
+      "!!env.d.ts",
+      "!!packages/ui/src/components"
     ]
   }
 }
