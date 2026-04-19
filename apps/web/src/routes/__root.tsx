@@ -1,3 +1,4 @@
+import { Toaster } from "@repo/ui/components/sonner";
 import appCss from "@repo/ui/globals.css?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -48,6 +49,7 @@ function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <Toaster />
       <ReactQueryDevtools buttonPosition="bottom-left" />
       <TanStackRouterDevtools position="bottom-right" />
     </QueryClientProvider>
