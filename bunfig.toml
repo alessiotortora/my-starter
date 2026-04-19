@@ -1,0 +1,3 @@
+# Disable Bun's automatic .env loading — varlock loads and validates env,
+# Bun should only inherit the env that varlock populates via `varlock run`.
+env = false
