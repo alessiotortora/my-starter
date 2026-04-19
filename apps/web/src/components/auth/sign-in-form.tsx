@@ -13,21 +13,21 @@ export function SignInForm() {
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    const { error } = await signIn.email({ email, password });
-    setPending(false);
-    if (error) {
-      toast.error(error.message ?? "Invalid email or password");
-      return;
-    }
-    toast.success("Welcome back");
-    navigate({ to: "/dashboard" });
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={async (event) => {
+        event.preventDefault();
+        setPending(true);
+        const { error } = await signIn.email({ email, password });
+        setPending(false);
+        if (error) {
+          toast.error(error.message ?? "Invalid email or password");
+          return;
+        }
+        toast.success("Welcome back");
+        navigate({ to: "/dashboard" });
+      }}
+    >
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="signin-email">Email</FieldLabel>

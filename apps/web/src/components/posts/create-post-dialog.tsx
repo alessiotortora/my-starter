@@ -52,15 +52,6 @@ export function CreatePostDialog() {
     setPublished(false);
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    createMutation.mutate({
-      title,
-      content: content.length > 0 ? content : null,
-      published,
-    });
-  }
-
   return (
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger render={<Button size="sm" />}>New post</DialogTrigger>
@@ -72,7 +63,17 @@ export function CreatePostDialog() {
             away.
           </DialogDescription>
         </DialogHeader>
-        <form id="create-post-form" onSubmit={handleSubmit}>
+        <form
+          id="create-post-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            createMutation.mutate({
+              title,
+              content: content.length > 0 ? content : null,
+              published,
+            });
+          }}
+        >
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="post-title">Title</FieldLabel>

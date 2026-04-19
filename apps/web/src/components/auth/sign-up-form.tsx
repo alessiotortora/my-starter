@@ -14,21 +14,21 @@ export function SignUpForm() {
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    const { error } = await signUp.email({ name, email, password });
-    setPending(false);
-    if (error) {
-      toast.error(error.message ?? "Could not create account");
-      return;
-    }
-    toast.success("Account created. Check your email to verify.");
-    navigate({ to: "/dashboard" });
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={async (event) => {
+        event.preventDefault();
+        setPending(true);
+        const { error } = await signUp.email({ name, email, password });
+        setPending(false);
+        if (error) {
+          toast.error(error.message ?? "Could not create account");
+          return;
+        }
+        toast.success("Account created. Check your email to verify.");
+        navigate({ to: "/dashboard" });
+      }}
+    >
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="signup-name">Name</FieldLabel>
