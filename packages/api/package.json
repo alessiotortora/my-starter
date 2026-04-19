@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./contract": "./src/contract.ts",
-    "./context": "./src/context.ts",
-    "./procedures": "./src/procedures.ts",
-    "./router": "./src/router.ts",
+    "./contract": "./src/contracts/index.ts",
+    "./context": "./src/middleware/context.ts",
+    "./procedures": "./src/middleware/procedures.ts",
+    "./router": "./src/routers/index.ts",
     "./client": "./src/client.ts"
   },
   "scripts": {
@@ -15,10 +15,12 @@
   },
   "dependencies": {
     "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*",
     "@orpc/contract": "^1",
     "@orpc/server": "^1",
     "@orpc/client": "^1",
     "@orpc/tanstack-query": "^1",
+    "drizzle-orm": "^0.44",
     "zod": "^3"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const serviceStatus = z.enum(["up", "down"]);
 
-export const contract = {
+export const healthContract = {
   health: oc.route({ method: "GET", path: "/health" }).output(
     z.object({
       status: z.enum(["healthy", "degraded"]),
