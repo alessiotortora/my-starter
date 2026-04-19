@@ -18,7 +18,7 @@
     "fix": "ultracite fix",
     "env:typegen": "varlock typegen",
     "env:check": "varlock load",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install && varlock typegen"
   },
   "workspaces": [
     "apps/*",
