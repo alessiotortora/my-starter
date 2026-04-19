@@ -38,8 +38,12 @@ jobs:
 
   typecheck:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.12
@@ -49,6 +53,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     # Placeholders satisfy varlock's schema validation during `vite build`.
     # CI only bundles static assets — real credentials belong in deploy
     # workflows via `secrets.*`, not here.
@@ -60,6 +66,8 @@ jobs:
       EMAIL_FROM: ci@example.com
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.12
