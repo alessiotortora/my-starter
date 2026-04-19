@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
+    "@repo/typescript-config": "workspace:*",
     "lefthook": "^2.1.5",
     "turbo": "^2",
     "typescript": "catalog:",
