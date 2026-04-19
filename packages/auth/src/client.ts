@@ -1,7 +1,8 @@
 import { createAuthClient } from "better-auth/react";
+import { ENV } from "varlock/env";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  baseURL: ENV.BETTER_AUTH_URL,
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;

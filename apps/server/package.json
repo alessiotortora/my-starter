@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --env-file=../../.env --watch src/index.ts",
+    "dev": "varlock run --path ../.. -- bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
-    "start": "bun --env-file=../../.env src/index.ts",
+    "start": "varlock run --path ../.. -- bun src/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
