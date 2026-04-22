@@ -1,0 +1,23 @@
+.git
+.github
+.claude
+.vscode
+.turbo
+node_modules
+**/node_modules
+**/dist
+**/.turbo
+**/*.tsbuildinfo
+.DS_Store
+
+# env files — runtime vars are injected by the host (Railway, etc.)
+.env
+.env.local
+.env.*.local
+
+# dev-only artifacts
+docs
+*.log
+
+# the Dockerfile is for the server; keep docs out of the image
+README.md

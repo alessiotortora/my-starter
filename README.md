@@ -1,6 +1,6 @@
 # my-starter
 
-A production-leaning TypeScript starter. Bun monorepo, Hono backend, TanStack Start web, Drizzle + Postgres (Supabase), Better Auth, oRPC end-to-end types, Resend email, varlock env, shadcn UI.
+A production-leaning TypeScript starter. Bun monorepo, Hono backend, TanStack Start web, Drizzle + Postgres, Better Auth, oRPC end-to-end types, Resend email, varlock env, shadcn UI.
 
 ## Stack
 
@@ -11,7 +11,7 @@ A production-leaning TypeScript starter. Bun monorepo, Hono backend, TanStack St
 | Web app | [TanStack Start](https://tanstack.com/start) + [TanStack Router](https://tanstack.com/router) + [TanStack Query](https://tanstack.com/query) |
 | Server | [Hono](https://hono.dev) on Bun |
 | RPC | [oRPC](https://orpc.unnoq.com) (contract-first, TanStack Query integration) |
-| ORM / Database | [Drizzle](https://orm.drizzle.team) + [postgres-js](https://github.com/porsager/postgres) → [Supabase Postgres](https://supabase.com) |
+| ORM / Database | [Drizzle](https://orm.drizzle.team) + [postgres-js](https://github.com/porsager/postgres) → Postgres (local via [docker compose](https://docs.docker.com/compose/), [Railway](https://railway.com) in prod) |
 | Auth | [Better Auth](https://www.better-auth.com) (email/password + verification + password reset) |
 | Email | [Resend](https://resend.com) |
 | Env management | [varlock](https://varlock.dev) |
@@ -60,7 +60,8 @@ packages/
 ## Prerequisites
 
 - [Bun](https://bun.sh) ≥ 1.3.12
-- A Postgres database. We recommend [Supabase](https://supabase.com) (the schema assumes you connect as the `postgres` role to bypass RLS — the direct connection or pooler with DB password).
+- [Docker](https://www.docker.com) (for local Postgres via `docker compose`).
+- A Postgres database for prod. [Railway](https://railway.com) is the intended target; any Postgres works — the starter uses the `postgres` role to bypass RLS.
 - Optional: a [Resend](https://resend.com) account for real email sending. Without it, emails log to the server console in dev.
 
 ## Quick start
@@ -73,17 +74,22 @@ bun install         # Runs `prepare` → installs hooks + generates env.d.ts
 
 # 2. Configure env
 cp .env.example .env
-# Fill in DATABASE_URL and BETTER_AUTH_SECRET (see .env.example for format)
+# Fill in DATABASE_URL (postgresql://postgres:postgres@127.0.0.1:5432/postgres for local docker)
+# and BETTER_AUTH_SECRET (`openssl rand -base64 32`).
 
-# 3. Push schema to your database
-cd packages/db
-bun --env-file=../../.env x drizzle-kit push
-# Then in the Supabase SQL editor: paste & run `packages/db/src/setup.sql`
+# 3. Start Postgres
+bun db:up           # docker compose up -d → postgres:17 on :5432
 
-# 4. Start dev
-cd ../..
-bun dev             # Server on :3000, web on :3001
+# 4. Push schema
+bun db:push         # Applies Drizzle schema to the local DB
+
+# 5. Start dev
+bun dev             # Runs server (:3000) + web (:3001) via Turbo
 ```
+
+> For Drizzle Studio, run `bun db:studio` in a second terminal when you want to inspect data — it's a tool, not a service, so it's deliberately not part of `bun dev`.
+
+> **Upgrading from the old Supabase-CLI setup?** Change `:54322` → `:5432` in your `.env` / `.env.local` and run `supabase stop` before `bun db:up`.
 
 ## Env management (varlock)
 
@@ -122,20 +128,74 @@ Contract-first. The `contract` defined in `packages/api/src/contracts/` is the s
   - `health` — service status probe (public)
   - `posts` — `listPublished` (public), `get` (public; 404 on unpublished unless owner), `listMine` + `create` + `update` + `delete` (protected, owner-only)
 
-## Database security model
+## Database
 
-The starter is **server-only** — the browser never touches Postgres directly. Still, defense-in-depth is enabled:
+Postgres via Drizzle + [postgres-js](https://github.com/porsager/postgres). Locally it runs in a single docker container; in prod it's whatever Postgres your host provides ([Railway](https://railway.com) is the intended target). The app reads `DATABASE_URL` — nothing else — so swapping hosts is a one-line change.
+
+### Local stack (what `bun db:up` actually starts)
+
+`docker-compose.yml` at the repo root defines **one service**, backed by four Docker primitives:
+
+| Primitive | Name | What it is |
+|---|---|---|
+| Image | `postgres:17-alpine` | Read-only template pulled to disk (~274 MB, one-time). Images don't "run" — they're a frozen filesystem. |
+| Container | `my-starter-db` | A running process created from the image. Maps host `:5432` → container `:5432`. |
+| Volume | `my-starter_postgres-data` | Docker-managed directory mounted at `/var/lib/postgresql/data` inside the container. Persists across `bun db:down`; wiped by `bun db:reset`. |
+| Network | `my-starter_default` | Private bridge compose creates by default (unused while there's only one service). |
+
+Your host connects via `DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres` — the same kind of URL any managed Postgres would hand you.
+
+### Verify the stack is wired
+
+Run these after `bun db:up` to smoke-test each layer:
+
+```bash
+# 1. Container is up and healthy
+docker compose ps
+#    STATUS → "Up … (healthy)"
+
+# 2. Postgres accepts queries
+docker exec my-starter-db psql -U postgres -d postgres -c "SELECT 1"
+#    ?column? → 1
+
+# 3. Drizzle can connect + sync schema
+bun db:push
+#    "[✓] Pulling schema from database…" then changes applied or "No changes detected"
+
+# 4. Tables exist with the expected shape
+docker exec my-starter-db psql -U postgres -d postgres -c "\dt"
+#    5 rows: account, posts, session, user, verification
+
+# 5. Drizzle Studio (web UI) opens
+bun db:studio
+#    Opens https://local.drizzle.studio — if it hangs, DATABASE_URL isn't resolving;
+#    confirm .env has :5432 and that `bun db:up` is actually running.
+
+# 6. End-to-end: the app can sign a user up
+bun --cwd apps/server dev &
+sleep 3
+curl -sS -X POST http://127.0.0.1:3000/api/auth/sign-up/email \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"probe@test.local","password":"password123456","name":"Probe"}'
+#    → JSON with `user.id`, `token`, `user.emailVerified: false`
+kill %1
+```
+
+If all six pass, the full chain `host → docker → postgres → drizzle → better-auth` is working.
+
+### Security model (defense-in-depth)
+
+The starter is **server-only** — the browser never touches Postgres directly. Two guardrails still apply:
 
 1. **Row-Level Security** (`.enableRLS()` on every `pgTable`). With no `pgPolicy` defined, Postgres default-denies. Your backend bypasses this because `DATABASE_URL` connects as the `postgres` role.
-2. **Revoked privileges** (`packages/db/src/setup.sql`, run once in Supabase SQL editor). Revokes all privileges on the `public` schema from `anon` and `authenticated` roles — closes the PostgREST attack surface that Supabase auto-exposes.
-3. **Ownership checks** live in the service layer (`packages/api/src/services/posts.ts`). Updates/deletes filter `WHERE user_id = :session_user_id` AND assert ownership beforehand.
+2. **Ownership checks** live in the service layer (`packages/api/src/services/posts.ts`). Updates/deletes filter `WHERE user_id = :session_user_id` AND assert ownership beforehand.
 
-If you ever expose the Supabase anon key to the browser (Supabase client SDK, Realtime, Storage), switch from default-deny to explicit `pgPolicy` rules per table.
+If you ever expose Postgres to the browser directly (PostgREST, Supabase anon key, a thin REST layer), flip #1 from default-deny to explicit `pgPolicy` rules per table.
 
 ## Commands
 
 ```bash
-# Dev (server + web in parallel)
+# Dev (server :3000 + web :3001 via Turbo)
 bun dev
 
 # Lint / format (auto-fix)
@@ -145,23 +205,42 @@ bun check
 # Type check
 bun typecheck
 
+# Tests (vitest, per-package via turbo — use `bun run test`, not `bun test`)
+bun run test
+
 # Build
 bun build
+
+# Rename the starter for a new project
+bun rename my-new-app     # Updates package.json, docker-compose.yml, README.md
 
 # Env tools
 bun env:typegen         # Regenerate env.d.ts
 bun env:check           # Validate current env against schema
 
-# Database
-cd packages/db
-bun --env-file=../../.env x drizzle-kit push      # Sync schema to Supabase
-bun --env-file=../../.env x drizzle-kit studio    # Open Drizzle Studio
-bun --env-file=../../.env x drizzle-kit generate  # Generate a migration file (when ready)
+# Database (all from repo root)
+bun db:up                # Start local Postgres (docker)
+bun db:down              # Stop it (preserves data)
+bun db:reset             # Wipe volume + restart
+bun db:push              # Sync Drizzle schema to DB
+bun db:studio            # Open Drizzle Studio (second terminal)
+bun db:generate          # Generate a migration file (when ready)
+bun db:migrate           # Apply pending migrations
 ```
 
 ## Deploying
 
-This starter is runtime-agnostic — Hono runs on Bun, Node, or Cloudflare Workers; TanStack Start builds to any static host + SSR runtime. A concrete deploy config is out of scope for the starter; recommended path is Cloudflare Workers (via Wrangler / Alchemy) with the same Supabase Zurich database.
+Recommended path is [Railway](https://railway.com) for both the Hono server and Postgres database. The server ships a production `Dockerfile` at `apps/server/Dockerfile` that Railway picks up automatically:
+
+```bash
+# Build locally to verify
+docker build -f apps/server/Dockerfile -t my-starter-server .
+docker run --rm -p 3000:3000 --env-file .env my-starter-server
+```
+
+It's a 3-stage bun build (deps → bundle → runtime). The bundle inlines all workspace + npm deps into a single `dist/index.js`, so the runtime image ships without `node_modules` (~110 MB total, mostly the Bun runtime on Alpine). Varlock is dev-only — at runtime the host is expected to inject env vars directly.
+
+Web (TanStack Start) builds to any static host + SSR runtime and is deployed separately.
 
 For GitHub Actions deploy workflows, use `secrets.*` for sensitive values (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `RESEND_API_KEY`) and plain `env:` for public config (`BETTER_AUTH_URL`, `BETTER_AUTH_TRUSTED_ORIGIN`). CI build (this repo's `ci.yml`) uses placeholder values inline — no real secrets are needed for `vite build`.
 

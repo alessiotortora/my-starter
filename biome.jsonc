@@ -17,5 +17,8 @@
       "!!env.d.ts",
       "!!packages/ui/src/components"
     ]
+  },
+  "javascript": {
+    "globals": ["Bun"]
   }
 }
