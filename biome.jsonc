@@ -15,7 +15,8 @@
       "!!**/routeTree.gen.ts",
       "!!**/dist",
       "!!env.d.ts",
-      "!!packages/ui/src/components"
+      "!!packages/ui/src/components",
+      "!!.agents"
     ]
   },
   "javascript": {
