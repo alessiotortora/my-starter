@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.24
 # Multi-stage build for the Hono server on Bun.
 # Target: Railway / Fly / any container host that injects env vars at runtime.
 #
@@ -7,7 +7,7 @@
 # Run:
 #   docker run --rm -p 3000:3000 --env-file .env my-starter-server
 
-FROM oven/bun:1.3.12-alpine AS base
+FROM oven/bun:1.3.14-alpine AS base
 WORKDIR /app
 
 # --- deps: install once, cached when manifests don't change ---
